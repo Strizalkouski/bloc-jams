@@ -81,12 +81,19 @@ var setCurrentAlbum = function(album) {
     }
 };
 
-//Check 13 Part 1 - create function to travel DOM Upward until parent specified class name found - Refactored //after to keep consistent while moving forward with project
+//Check 13 Part 1 - create function to travel DOM Upward until parent specified class name found 
 var findParentByClassName = function(element,targetClass){
     if (element) {
         var currentParent = element.parentElement;
-        while (currentParent.className !== targetClass && currentParent.className !== null ){
+        if (currentParent.className !== targetClass && currentParent.className !== null ){
             currentParent =currentParent.parentElement;
+        }
+        else if (currentParent != element.parentElement){ 
+            console.log("No Parent Found");
+        } 
+            
+        else if (currentParent != element.parentElement.className){
+            console.log("No Parent Found With That Class Name"); 
         }
         return currentParent;
     }
