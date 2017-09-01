@@ -125,13 +125,8 @@ var pauseButtonTemplate = '<a class="album-song-button"><span class="ion-pause">
 var currentlyPlayingSong = null;
 
 $(document).ready(function() {
-   var $albumImage = $('.album-cover-art');
     setCurrentAlbum(albumPicasso);
-    for (var i = 0; i <songRows.length; i++){
-        songRows[i].addEventListener('click', function(event) {
-             clickHandler(event.target);
-        });
-    }
+   
 
     var albums = [albumPicasso, albumMarconi, albumDracarys];
     var index = 1;
@@ -142,5 +137,5 @@ $(document).ready(function() {
             index = 0;
         }
     });
-});
+
 
