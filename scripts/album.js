@@ -11,7 +11,8 @@ var createSongRow = function (songNumber, songName, songLength) {
 // Create template for song list
    var $row = $(template);
     var clickHandler = function(){
-        var songNumber = $(this).attr('data-song-number');
+        var songNumber = parseInt($(this).attr('data-song-number'));
+        console.log(songNumber);
 //If a song is playing
 	if (currentlyPlayingSongNumber !== null) {
 		// Revert to song number for currently playing song because user started playing new song.
@@ -38,7 +39,7 @@ var createSongRow = function (songNumber, songName, songLength) {
 // If hovering over
     var onHover = function(event){
         var songNumberCell = $(this).find('.song-item-number');
-        var songNumber = parseInt($(this).attr('data-song-number'));
+        var songNumber = parseInt(songNumberCell.attr('data-song-number'));
 // Song isn't Playing so show Play Button              
         if (songNumber !== currentlyPlayingSongNumber) {
             //Set Cell to Play Button
@@ -49,7 +50,7 @@ var createSongRow = function (songNumber, songName, songLength) {
     var offHover = function(event){
         //assign a variable from searching the entire dom for all itons with son-item-number class
         var songNumberCell = $(this).find('.song-item-number');
-        var songNumber = parseInt($(this).attr('data-song-number'));
+        var songNumber = parseInt(songNumberCell.attr('data-song-number'));
 //Song isn't Currently playing so display song number
         if (songNumber !== currentlyPlayingSongNumber) {
             //Set Cell to Song Number
@@ -104,7 +105,7 @@ var nextSong = function() {
 //Variable which stores the currentlyPlayingSong Number
     var lastSongNumber = currentlyPlayingSongNumber;
 
- //TODO :  Understand what I am doing from here through line 108
+ //Converting index to song number by adding 1 to it and storing that value
     currentlyPlayingSongNumber = currentSongIndex + 1;
     currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
 
@@ -132,7 +133,7 @@ var previousSong = function() {
   //Variable to keep track of the current song or last song played
     var lastSongNumber = currentlyPlayingSongNumber;
 
-//TODO : Understand this code through line 136
+//Add one to song index in order to find song number and save that value
     currentlyPlayingSongNumber = currentSongIndex + 1;
     currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
 
@@ -140,8 +141,9 @@ var previousSong = function() {
     updatePlayerBarSong();
 //Call the Pause button for the main controls
     $('.main-controls .play-pause').html(playerBarPauseButton);
-//TODO : Understand through lines 147 - Why am i doing this
+//Search through DOM for songItemNumber with value of currentlyPlayingSongNumber
     var $previousSongNumberCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
+//Search through DOM for songItemNumber with value of lastSongNumber    
     var $lastSongNumberCell = $('.song-item-number[data-song-number="' + lastSongNumber + '"]');
 
     $previousSongNumberCell.html(pauseButtonTemplate);
