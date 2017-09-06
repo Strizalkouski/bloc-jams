@@ -54,9 +54,8 @@ var createSongRow = function (songNumber, songName, songLength) {
         if (songNumber !== currentlyPlayingSongNumber) {
             //Set Cell to Song Number
             songNumberCell.html(songNumber);
-
-        }
-    };
+}
+};
     //Call click action based on song number
     $row.find('.song-item-number').click(clickHandler);
     //Action based on hover or leaving the hover
@@ -182,15 +181,16 @@ $(document).ready(function() {
    
 });
 
-// Cycle Albums - Non Functional.
-//    var albums = [albumPicasso, albumMarconi, albumDracarys];
+ 
+// Comment Out Non Functional Code
+//   var albums = [albumPicasso, albumMarconi, albumDracarys];
 //    var index = 1;
 //    albumImage.addEventListener("click", function(event){
 //        setCurrentAlbum(albums[index]);
 //        index++;
 //        if (index == albums.length){
 //            index = 0;
-//        }
-//   });
+//       }
+//  });
 
 
