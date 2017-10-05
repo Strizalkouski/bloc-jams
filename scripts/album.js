@@ -203,15 +203,29 @@ var playerBarPauseButton = '<span class="ion-pause"></span>';
 var currentlyPlayingSongNumber = null;
 var currentAlbum = null;
 var currentSongFromAlbum = null;
-//checkpoint 20 state there is no current buzz song playing
+//check 20 state there is no current buzz song playing
 var currentSoundFile = null;
-//checkpoint 20 state of volume
+//check 20 state of volume
 var currentVolume = 80;
 //Previous button is part of main controls and goes to previous song
 var $previousButton = $('.main-controls .previous');
 //Next button is part of main controls and goes to next song
 var $nextButton = $('.main-controls .next');
-
+//Check 20 variable to hold $'.main-controls .play-pause' status
+var $currentControlStatus = $('.main-controls .play-pause');
+//Check 20 function for play/pause via playerBar
+var togglePlayFromPlayerBar = function(){
+  if (!currentSoundFile.isPaused){
+    songNumberCell.html(playButtonTemplate);
+    $('.main-controls .play-pause').html(playerBarPlayButton);
+    currentSoundFile.pause();
+  }
+  else {
+    songNumberCell.html(pauseButtonTemplate);
+    $('.main-controls .play-pause').html(playerBarPauseButton);
+    currentSoundFile.play();
+  }
+};
 //When the page is loaded run this function
 $(document).ready(function() {
     //Sets Current Album to our Filler Album
@@ -220,6 +234,7 @@ $(document).ready(function() {
     $previousButton.click(previousSong);
     //when click next button, go to next song
     $nextButton.click(nextSong);
+    $currentControlStatus.click(togglePlayFromPlayerBar);
    
 });
 
