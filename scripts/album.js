@@ -1,40 +1,46 @@
 //States contents of each Song Row and makes it contain Song #, Name, and Duration
 var createSongRow = function (songNumber, songName, songLength) {
-    var template =
-        //Uses Table Formatting so each item will have a cell
+  var template =
+      //Uses Table Formatting so each item will have a cell
   '    <tr class = "album-view-song-item">'
-+ '     <td class= "song-item-number" data-song-number="' + songNumber + '">' + songNumber + '</td>'
-+ '     <td class = "song-item-title">' + songName + '</td>'
-+ '     <td class = "song-item-duration">' + songLength + '</td>'
-+ '    </tr>';
+  + '     <td class= "song-item-number" data-song-number="' + songNumber + '">' + songNumber + '</td>'
+  + '     <td class = "song-item-title">' + songName + '</td>'
+  + '     <td class = "song-item-duration">' + songLength + '</td>'
+  + '    </tr>';
 
-    
-
-// Create template for song list
-   var $row = $(template);
-    var clickHandler = function(){
-        var songNumber = parseInt($(this).attr('data-song-number'));
-//If a song is playing
-	if (currentlyPlayingSongNumber !== null) {
-		// Revert to song number for currently playing song because user started playing new song.
-		var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
-		currentlyPlayingCell.html(currentlyPlayingSongNumber);
-	}
-//If song playing is not this song
-	if (currentlyPlayingSongNumber !== songNumber) {
-		// Switch from Play -> Pause button to indicate new song is playing.
-		$(this).html(pauseButtonTemplate);
-		setSong(songNumber);
-        updatePlayerBarSong();
-	} 
-//If This is the song that is playing right now
-        else if (currentlyPlayingSongNumber === songNumber) {
-		// Switch from Pause -> Play button to pause currently playing song.
-		$(this).html(playButtonTemplate);
+  // Create template for song list
+  var $row = $(template);
+  var clickHandler = function(){
+    var songNumber = parseInt($(this).attr('data-song-number'));
+    //If a song is playing
+    if (currentlyPlayingSongNumber !== null) {
+    // Revert to song number for currently playing song because user started playing new song.
+      var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
+      currentlyPlayingCell.html(currentlyPlayingSongNumber);
+    }
+    //If song playing is not this song
+    if (currentlyPlayingSongNumber !== songNumber) {
+      // Switch from Play -> Pause button to indicate new song is playing.
+      $(this).html(pauseButtonTemplate);
+      setSong(songNumber);
+      //Check 20 Refactor for Play Song
+      currentSoundFile.play();
+      updatePlayerBarSong();
+    } 
+    //If This is the song that is playing right now
+    else if (currentlyPlayingSongNumber === songNumber) {
+      if (!currentSoundFile.isPaused()){
+        currentSoundFile.pause();
         $('.main-controls .play-pause').html(playerBarPlayButton);
-		currentlyPlayingSongNumber = null;
-        currentSongFromAlbum = null;
-	}
+        $(this).html(playButtonTemplate);
+      }
+      //Check 20 refactor for playing and pausing songs
+      else if (currentSoundFile.isPaused()){
+          currentSoundFile.play();
+          $(this).html(pauseButtonTemplate);
+          $('main-controls .play-pause').html(playerBarPauseButton);
+      }
+    }
 };
 // If hovering over
     var onHover = function(event){
@@ -68,9 +74,24 @@ var createSongRow = function (songNumber, songName, songLength) {
 //Assignment from checkpoint 19    
 // Create Set Song Function - Takes one arguement songNumber will return currentlyPlayingSongNumber and              currentSongFromAlbum
 var setSong = function(songNumber){
+  if (currentSoundFile){
+    currentSoundFile.stop();
+  }
     currentlyPlayingSongNumber = songNumber;
     currentSongFromAlbum = currentAlbum.songs[songNumber - 1];
-    
+    //check 20 Assign new sound object passed in via audioUrl attached to currentSongFromAlbum
+    currentSoundFile = new buzz.sound(currentSongFromAlbum.audioUrl, {
+    //check 20 Settings Object - formats lists acceptable fomats and preload says load the song as soon as the page loads
+        formats: ['mp3'],
+        preload: true
+    });
+  setVolume(currentVolume);
+};
+
+var setVolume = function(volume){
+  if (currentSoundFile){
+    currentSoundFile.setVolume(volume);
+  }
 };
     
 var getSongNumberCell = function(number){
@@ -107,6 +128,7 @@ var nextSong = function() {
     var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
  
     currentSongIndex++;
+    currentSoundFile.play();
 //If this is the last song, revert to the first song on the album
     if (currentSongIndex >= currentAlbum.songs.length) {
         currentSongIndex = 0;
@@ -118,7 +140,7 @@ var nextSong = function() {
  //Converting index to song number by adding 1 to it and storing that value
     //Assignment 19
     setSong(currentSongIndex+1);
-   
+    currentSoundFile.play();
 
     //Update Player to display correct song
     updatePlayerBarSong();
@@ -136,6 +158,7 @@ var previousSong = function() {
     var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
   
     currentSongIndex--;
+    
 //If at the beginning of the album move to end of the album on previous click
     if (currentSongIndex < 0) {
         currentSongIndex = currentAlbum.songs.length - 1;
@@ -147,6 +170,7 @@ var previousSong = function() {
 //Add one to song index in order to find song number and save that value
     //Assignment 19
     setSong(currentSongIndex+1);
+    currentSoundFile.play();
     
 
    
@@ -179,6 +203,10 @@ var playerBarPauseButton = '<span class="ion-pause"></span>';
 var currentlyPlayingSongNumber = null;
 var currentAlbum = null;
 var currentSongFromAlbum = null;
+//checkpoint 20 state there is no current buzz song playing
+var currentSoundFile = null;
+//checkpoint 20 state of volume
+var currentVolume = 80;
 //Previous button is part of main controls and goes to previous song
 var $previousButton = $('.main-controls .previous');
 //Next button is part of main controls and goes to next song
