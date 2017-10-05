@@ -215,15 +215,18 @@ var $nextButton = $('.main-controls .next');
 var $currentControlStatus = $('.main-controls .play-pause');
 //Check 20 function for play/pause via playerBar
 var togglePlayFromPlayerBar = function(){
-  if (!currentSoundFile.isPaused){
+  var songNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
+  
+  if (currentSoundFile.isPaused()){
+    songNumberCell.html(pauseButtonTemplate);
+    $('.main-controls .play-pause').html(playerBarPauseButton)
+    currentSoundFile.play();
+
+  }
+  else {
     songNumberCell.html(playButtonTemplate);
     $('.main-controls .play-pause').html(playerBarPlayButton);
     currentSoundFile.pause();
-  }
-  else {
-    songNumberCell.html(pauseButtonTemplate);
-    $('.main-controls .play-pause').html(playerBarPauseButton);
-    currentSoundFile.play();
   }
 };
 //When the page is loaded run this function
