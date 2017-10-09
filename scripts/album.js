@@ -1,5 +1,6 @@
 //States contents of each Song Row and makes it contain Song #, Name, and Duration
 var createSongRow = function (songNumber, songName, songLength) {
+  songLength = filterTimeCode(songLength);
   var template =
       //Uses Table Formatting so each item will have a cell
   '    <tr class = "album-view-song-item">'
@@ -7,6 +8,7 @@ var createSongRow = function (songNumber, songName, songLength) {
   + '     <td class = "song-item-title">' + songName + '</td>'
   + '     <td class = "song-item-duration">' + songLength + '</td>'
   + '    </tr>';
+  
 
   // Create template for song list
   var $row = $(template);
@@ -144,6 +146,7 @@ var updateSeekBarWhileSongPlays = function () {
       var seekBarFillRatio = this.getTime() / this.getDuration();
       var $seekBar = $('.seek-control .seek-bar');
       updateSeekPercentage($seekBar, seekBarFillRatio);
+      setCurrentTimeInPlayerBar(this.getTime());
     });
   }
 };
@@ -279,6 +282,7 @@ var updatePlayerBarSong = function(){
     $('.currently-playing .artist-name').text(currentAlbum.artist);
     $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.title + " - " + currentAlbum.artist);
     $('.main-controls .play-pause').html(playerBarPauseButton);
+    setTotalTimeInPlayerBar(currentSongFromAlbum.duration);
 };
 //Create Templates for Play and Pause Buttons as well as call the Spans to show the icons.
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
@@ -300,6 +304,33 @@ var $previousButton = $('.main-controls .previous');
 var $nextButton = $('.main-controls .next');
 //Check 20 variable to hold $'.main-controls .play-pause' status
 var $currentControlStatus = $('.main-controls .play-pause');
+//Check 21 Assignment filterTimeCode function
+var filterTimeCode = function(timeInSeconds){
+  //use parseFloat method to get the seconds in numberpa
+  timeInSeconds = parseFloat(timeInSeconds);
+  var minutes = Math.floor(timeInSeconds/60);
+  //store variable for whole seconds and whole minutes using math.floor to round down
+  var seconds = Math.floor(timeInSeconds%60);
+  //return the time in X:XX format
+  if (seconds < 10){
+    return (minutes + ":0" + seconds);
+  }
+  else{
+  return (minutes + ":" + seconds);
+  }
+}
+//Check 21 Assignment setCurrentTimeInPlayerBar function
+var setCurrentTimeInPlayerBar = function (currentTime){
+  //set text of element with .current-time class to current time in song
+  //using .seek-control as that seems to be the only place I can find a use of .current-time
+  currentTime = filterTimeCode(currentTime);
+  $('.current-time').text(currentTime);
+}
+//Check 21 Assignment setTotalTimeInPlayerBar function
+var setTotalTimeInPlayerBar = function(totalTime){
+  totalTime = filterTimeCode(totalTime);
+  $('.total-time').text(totalTime);
+}
 //Check 20 function for play/pause via playerBar
 var togglePlayFromPlayerBar = function(){
   var songNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
